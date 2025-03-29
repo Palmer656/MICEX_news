@@ -197,11 +197,11 @@ from telethon import TelegramClient
 from telethon.errors import (SessionPasswordNeededError,
                              FloodWaitError, PhoneNumberBannedError)
 
-api_id = os.getenv("api_id")
-api_hash = os.getenv("api_hash")
-phone_number = os.getenv("phone_number")
-two_fa_password = os.getenv("two_fa_password")
-channel_name = os.getenv("channel_username")  # Имя канала
+api_id = os.getenv("API_ID")
+api_hash = os.getenv("API_HASH")
+phone_number = os.getenv("PHONE_NUMBER")
+two_fa_password = os.getenv("TWO_FA_PASSWORD")
+channel_name = os.getenv("CHANNEL_USERNAME")  # Имя канала
 
 
 def get_channel_messages(channel):
@@ -237,7 +237,7 @@ async def main():
 
             messages = await client(GetHistoryRequest(
                 peer=channel,
-                limit=10,  # Количество сообщений
+                limit=50,  # Количество сообщений
                 offset_id=0,
                 offset_date=None,
                 add_offset=0,
@@ -249,12 +249,14 @@ async def main():
             # print("Получение сообщений")
             # messages = get_channel_messages(channel)
             # Перебираем каждое сообщение и выводим его текст
+            msgs = []
             for msg in messages.messages:
-                print(f"ID сообщения: {msg.id}")
-                print(f"Дата отправки: {msg.date}")
-                print(f"Текст сообщения: {msg.message}")
-                print("---" * 20)
-
+                msgs.append({"telegram_msg_id": msg.id, "datetime": msg.date, "text": msg.message})
+                # print(f"ID сообщения: {msg.id}")
+                # print(f"Дата отправки: {msg.date}")
+                # print(f"Текст сообщения: {msg.message}")
+                # print("---" * 20)
+            print(msgs)
 
     except Exception as e:
         print(f"Произошла ошибка: {e}")
