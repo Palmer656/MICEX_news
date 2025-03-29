@@ -17,12 +17,13 @@ async def event_handler(value):
     Обработчик события. Как только мы получаем новое сообщение,
     будет отрабатывать данная функция
     """
-    print(f"Temperature: {value['temp']}, weather: {value['weather']}")
+    print(f"telegram_msg_id: {value['telegram_msg_id']}, tags: {value['tags']}")
 
 
 async def consume():
     consumer = AIOKafkaConsumer(
-        config.WEATHER_TOPIC,
+        # config.WEATHER_TOPIC,
+        config.MICEX_NEWS_TOPIC,
         bootstrap_servers=f'{config.HOST}:{config.PORT}',
         value_deserializer=deserializer
     )

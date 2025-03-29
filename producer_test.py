@@ -2,9 +2,12 @@ import asyncio
 import json
 import random
 from aiokafka import AIOKafkaProducer
+from pprint import pprint
+from test_data import cleared_messages
 
 import config
 
+# pprint(cleared_messages)
 
 def serializer(value):
     """
@@ -22,13 +25,15 @@ async def produce():
     )
     await producer.start()
     try:
-        while True:
-            data = {
-                "temp": random.randint(10, 20),
-                "weather": random.choice(("rainy", "sunny"))
-            }
-            await producer.send(config.WEATHER_TOPIC, data)
-            await asyncio.sleep(random.randint(1, 5))
+        # while True:
+        for msg in cleared_messages:
+            # data = {
+            #     "temp": random.randint(10, 20),
+            #     "weather": random.choice(("rainy", "sunny"))
+            # }
+            # await producer.send(config.WEATHER_TOPIC, msg)
+            await producer.send(config.MICEX_NEWS_TOPIC, msg)
+            await asyncio.sleep(random.randint(3, 7))
     finally:
         await producer.stop()
 

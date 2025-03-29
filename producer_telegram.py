@@ -36,7 +36,7 @@ async def main():
 
             messages = await client(GetHistoryRequest(
                 peer=channel,
-                limit=5,  # Количество сообщений
+                limit=50,  # Количество сообщений
                 offset_id=0,
                 offset_date=None,
                 add_offset=0,
@@ -49,12 +49,17 @@ async def main():
             for msg in messages.messages:
                 if not msg.message:
                     continue
-                msg_dict = {"telegram_msg_id": msg.id, "datetime": msg.date, "text": msg.message}
+                date = msg["datetime"].strftime('%d.%m.%Y')
+                time = msg["datetime"].strftime('%H:%M')
+                msg_dict = {"telegram_msg_id": msg.id,
+                            "date": date,
+                            "time": time,
+                            "text": msg.message}
                 tags_list = re.findall(r'#\w+', msg_dict["text"])
                 tags_list = [tag.replace("#", "") for tag in tags_list]
                 msg_dict["tags"] = tags_list
                 cleared_messages.append(msg_dict)
-            # pprint(cleared_messages)
+            pprint(cleared_messages)
 
     except Exception as e:
         print(f"Произошла ошибка: {e}")
