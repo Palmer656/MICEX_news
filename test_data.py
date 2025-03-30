@@ -1122,6 +1122,8 @@ cleared_messages = []
 for msg in messages:
     if not msg["text"]:
         continue
+    # date = msg["datetime"].strftime('%d.%m.%Y')
+    # time = msg["datetime"].strftime('%H:%M')
     date = msg["datetime"].strftime('%d.%m.%Y')
     time = msg["datetime"].strftime('%H:%M')
     msg_dict = {"telegram_msg_id": msg["telegram_msg_id"],
@@ -1132,7 +1134,7 @@ for msg in messages:
     tags_list = [tag.replace("#", "") for tag in tags_list]
     msg_dict["tags"] = tags_list
     cleared_messages.append(msg_dict)
-pprint(cleared_messages)
+# pprint(cleared_messages)
 
 
 
