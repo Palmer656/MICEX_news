@@ -1,12 +1,13 @@
+import asyncio
 import os
 import re
-import asyncio
-from dotenv import load_dotenv
 from pprint import pprint
-from telethon.tl.functions.messages import GetHistoryRequest
+
+from dotenv import load_dotenv
 from telethon import TelegramClient
-from telethon.errors import (SessionPasswordNeededError,
-                             FloodWaitError, PhoneNumberBannedError)
+from telethon.errors import (FloodWaitError, PhoneNumberBannedError,
+                             SessionPasswordNeededError)
+from telethon.tl.functions.messages import GetHistoryRequest
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ api_id = os.getenv("API_ID")
 api_hash = os.getenv("API_HASH")
 phone_number = os.getenv("PHONE_NUMBER")
 two_fa_password = os.getenv("TWO_FA_PASSWORD")
-channel_name = os.getenv("CHANNEL_USERNAME")  # Имя канала
+channel_name = os.getenv("CHANNEL_USERNAME")
 
 
 async def main():
@@ -49,8 +50,8 @@ async def main():
             for msg in messages.messages:
                 if not msg.message:
                     continue
-                date = msg["datetime"].strftime('%d.%m.%Y')
-                time = msg["datetime"].strftime('%H:%M')
+                date = msg["datetime"].date()
+                time = msg["datetime"].time()
                 msg_dict = {"telegram_msg_id": msg.id,
                             "date": date,
                             "time": time,
@@ -65,6 +66,3 @@ async def main():
         print(f"Произошла ошибка: {e}")
 
 asyncio.run(main())
-
-# if __name__ == '__main__':
-#     main()

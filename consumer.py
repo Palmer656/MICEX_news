@@ -1,15 +1,21 @@
 import asyncio
 import json
+from datetime import datetime
+
 from aiokafka import AIOKafkaConsumer
 
-import config
+import kafka_config
+from db.queries.core import insert_message
 
 
 def deserializer(serialized):
     """
     Десериализатор получаемых данных
     """
-    return json.loads(serialized)
+    deserialized = json.loads(serialized)
+    deserialized["date"] = datetime.strptime(deserialized["date"], '%Y-%m-%d').date()
+    deserialized["time"] = datetime.strptime(deserialized["time"], '%H:%M:%S').time()
+    return deserialized
 
 
 async def event_handler(value):
@@ -17,14 +23,13 @@ async def event_handler(value):
     Обработчик события. Как только мы получаем новое сообщение,
     будет отрабатывать данная функция
     """
-    print(f"telegram_msg_id: {value['telegram_msg_id']}, tags: {value['tags']}")
+    insert_message(value)
 
 
 async def consume():
     consumer = AIOKafkaConsumer(
-        # config.WEATHER_TOPIC,
-        config.MICEX_NEWS_TOPIC,
-        bootstrap_servers=f'{config.HOST}:{config.PORT}',
+        kafka_config.MICEX_NEWS_TOPIC,
+        bootstrap_servers=f'{kafka_config.HOST}:{kafka_config.PORT}',
         value_deserializer=deserializer
     )
     await consumer.start()

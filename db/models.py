@@ -1,6 +1,7 @@
 from sqlalchemy import Table, Column, Integer, String, Date, Time, MetaData
 from sqlalchemy.dialects.postgresql import ARRAY
 
+
 metadata_obj = MetaData()
 
 

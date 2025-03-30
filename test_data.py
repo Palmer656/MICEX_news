@@ -1122,14 +1122,8 @@ cleared_messages = []
 for msg in messages:
     if not msg["text"]:
         continue
-    # date = msg["datetime"].strftime('%d.%m.%Y')
-    # time = msg["datetime"].strftime('%H:%M')
     date = msg["datetime"].date()
     time = msg["datetime"].time()
-    # print(date)
-    # print(time)
-    # print(type(date))
-    # print(type(time))
     msg_dict = {"telegram_msg_id": msg["telegram_msg_id"],
                 "date": date,
                 "time": time,

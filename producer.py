@@ -1,38 +1,33 @@
 import asyncio
 import json
 import random
+
 from aiokafka import AIOKafkaProducer
-from pprint import pprint
+
+import kafka_config
 from test_data import cleared_messages
 
-import config
-
-# pprint(cleared_messages)
 
 def serializer(value):
     """
     Обмен данными происходит в байтах, поэтому мы должны
     сначала перевести наше значение JSON, а затем в байты
     """
+    value["date"] = value["date"].isoformat()
+    value["time"] = value["time"].isoformat()
     return json.dumps(value).encode()
 
 
 async def produce():
     producer = AIOKafkaProducer(
-        bootstrap_servers=f'{config.HOST}:{config.PORT}',
+        bootstrap_servers=f'{kafka_config.HOST}:{kafka_config.PORT}',
         value_serializer=serializer,
         compression_type="gzip"
     )
     await producer.start()
     try:
-        # while True:
         for msg in cleared_messages:
-            # data = {
-            #     "temp": random.randint(10, 20),
-            #     "weather": random.choice(("rainy", "sunny"))
-            # }
-            # await producer.send(config.WEATHER_TOPIC, msg)
-            await producer.send(config.MICEX_NEWS_TOPIC, msg)
+            await producer.send(kafka_config.MICEX_NEWS_TOPIC, msg)
             await asyncio.sleep(random.randint(3, 7))
     finally:
         await producer.stop()
